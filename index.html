@@ -2,268 +2,524 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>GTA Configuration</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            --card-bg: rgba(30, 41, 59, 0.95);
+            --card-border: rgba(148, 163, 184, 0.2);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --accent-primary: #00d4aa;
+            --accent-secondary: #0ea5e9;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-glow: 0 0 40px rgba(0, 212, 170, 0.15);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.5;
-            background-color: #111827;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
             min-height: 100vh;
-            color: #f3f4f6;
+            font-size: 16px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             -webkit-overflow-scrolling: touch;
         }
 
-        .bg-grid {
-            background-image: 
-                linear-gradient(to right, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.05;
+        .container {
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .bg-glow {
+        .config-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-card);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .config-card::before {
+            content: '';
             position: absolute;
-            width: 600px;
-            height: 600px;
-            border-radius: 600px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.15), transparent 70%);
-            filter: blur(40px);
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
         }
 
-        .gradient-text {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .logo svg {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .title {
+            font-size: 1.875rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: inline-block;
+            margin-bottom: 8px;
         }
 
-        input {
-            color: #f3f4f6 !important;
-            background-color: rgba(17, 24, 39, 0.8) !important;
-            text-transform: uppercase !important;
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
-        input::placeholder {
-            color: #6b7280 !important;
-            text-transform: none !important;
+        .form-group {
+            margin-bottom: 24px;
         }
 
-        input:focus {
-            outline: none;
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.875rem;
         }
 
-        .hover-effect:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-        }
-
-        .loading {
+        .input-wrapper {
             position: relative;
-            pointer-events: none;
         }
 
-        .loading:after {
-            content: "";
+        .input-icon {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            left: 16px;
             top: 50%;
-            left: 50%;
-            margin: -10px 0 0 -10px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: loading-spinner 0.6s linear infinite;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 2;
         }
 
-        @keyframes loading-spinner {
-            to {
-                transform: rotate(360deg);
-            }
+        .form-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius);
+            padding: 16px 16px 16px 48px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: var(--transition);
+            text-transform: uppercase;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+            text-transform: none;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
         }
 
         .timeframe-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 0.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
         }
 
-        .timeframe-checkbox {
+        .timeframe-item {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0.5rem;
-            border: 1px solid #4B5563;
-            border-radius: 0.375rem;
+            padding: 12px 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius);
             cursor: pointer;
-            transition: all 0.2s ease;
-            background-color: rgba(17, 24, 39, 0.5);
+            transition: var(--transition);
+            font-weight: 600;
             font-size: 0.875rem;
-            font-weight: 500;
+            user-select: none;
         }
 
-        .timeframe-checkbox:hover {
-            border-color: #3B82F6;
+        .timeframe-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
         }
 
-        .timeframe-checkbox.selected {
-            background-color: #3B82F6;
-            border-color: #3B82F6;
+        .timeframe-item.selected {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-color: transparent;
             color: white;
+            box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 16px 24px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 212, 170, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn.loading {
+            color: transparent;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-preset {
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius);
+            padding: 12px 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-preset:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .error-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+                align-items: flex-start;
+                padding-top: 40px;
+            }
+
+            .config-card {
+                padding: 24px;
+                max-width: none;
+            }
+
+            .title {
+                font-size: 1.625rem;
+            }
+
+            .timeframe-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .timeframe-item {
+                padding: 10px 6px;
+                font-size: 0.8rem;
+            }
+
+            .form-input {
+                padding: 14px 14px 14px 44px;
+            }
+
+            .btn, .btn-preset {
+                padding: 14px 20px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px;
+                padding-top: 20px;
+            }
+
+            .config-card {
+                padding: 20px;
+            }
+
+            .timeframe-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Touch improvements for iOS */
+        .btn, .timeframe-item, .btn-preset {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        /* Dark theme enhancements */
+        @media (prefers-color-scheme: dark) {
+            .form-input {
+                background: rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .timeframe-item:focus,
+        .btn:focus,
+        .btn-preset:focus {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
         }
     </style>
 </head>
-<body class="relative overflow-x-hidden">
-    <!-- Background Elements -->
-    <div class="fixed inset-0 bg-grid"></div>
-    <div class="bg-glow fixed top-0 left-1/3 -translate-x-1/2"></div>
-    <div class="bg-glow fixed bottom-0 right-1/3 translate-x-1/2"></div>
-
-    <!-- Main Content -->
-    <div class="min-h-screen px-4 sm:px-6 lg:px-8 relative z-10 pt-8 pb-8">
-        <div class="w-full max-w-lg mx-auto">
-            <!-- Logo -->
-            <div class="flex items-center justify-center mb-6">
-                <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                </svg>
-                <span class="ml-3 text-xl font-bold gradient-text">GTA Configuration</span>
+<body>
+    <div class="container">
+        <div class="config-card">
+            <div class="header">
+                <div class="logo">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <h1 class="title">GTA Configuration</h1>
+                <p class="subtitle">Configure your trading analysis parameters</p>
             </div>
 
-            <!-- Configuration Container -->
-            <div class="relative">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg opacity-20 blur"></div>
-                <div class="relative bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-                    
-                    <div class="space-y-6">
-                        
-                        <!-- Trading Symbol Input -->
-                        <div>
-                            <label for="symbol" class="block text-sm font-medium text-gray-400 mb-2">Trading Symbol</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-                                    </svg>
-                                </div>
-                                <input 
-                                    type="text" 
-                                    id="symbol" 
-                                    placeholder="Enter trading symbol" 
-                                    value="BTCUSDT"
-                                    class="block w-full pl-10 pr-4 py-3 border border-gray-700 rounded-lg"
-                                    oninput="this.value = this.value.toUpperCase()"
-                                >
-                            </div>
-                        </div>
-
-                        <!-- Timeframes Selection -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-400 mb-3">Select Timeframes</label>
-                            <div class="timeframe-grid" id="timeframeGrid">
-                                <!-- Timeframes populated by JavaScript -->
-                            </div>
-                        </div>
-
-                        <!-- Start Analysis Button -->
-                        <button 
-                            id="analyzeButton"
-                            onclick="startAnalysis()"
-                            class="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 hover-effect"
-                        >
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            <form onsubmit="startAnalysis(); return false;">
+                <!-- Trading Symbol -->
+                <div class="form-group">
+                    <label for="symbol" class="form-label">Trading Symbol</label>
+                    <div class="input-wrapper">
+                        <div class="input-icon">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
                             </svg>
-                            Start GTA Analysis
-                        </button>
-
-                        <!-- Quick Preset Buttons -->
-                        <div class="grid grid-cols-2 gap-3">
-                            <button 
-                                onclick="loadQuickPreset()"
-                                class="flex items-center justify-center px-3 py-2 border border-gray-600 rounded-lg text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 transition-colors duration-200"
-                            >
-                                ⚡ Quick (3 TF)
-                            </button>
-                            <button 
-                                onclick="loadFullPreset()"
-                                class="flex items-center justify-center px-3 py-2 border border-gray-600 rounded-lg text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 transition-colors duration-200"
-                            >
-                                🎯 Full (8 TF)
-                            </button>
                         </div>
+                        <input 
+                            type="text" 
+                            id="symbol" 
+                            class="form-input"
+                            placeholder="Enter trading symbol (e.g. BTCUSDT)"
+                            value="BTCUSDT"
+                            maxlength="20"
+                            required
+                        >
                     </div>
                 </div>
-            </div>
+
+                <!-- Timeframes -->
+                <div class="form-group">
+                    <label class="form-label">Select Timeframes</label>
+                    <div class="timeframe-grid" id="timeframeGrid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Start Analysis Button -->
+                <button type="submit" id="analyzeButton" class="btn">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Start GTA Analysis
+                </button>
+
+                <!-- Preset Buttons -->
+                <div class="preset-buttons">
+                    <button type="button" onclick="loadQuickPreset()" class="btn-preset">
+                        <span>⚡</span>
+                        Quick (3 TF)
+                    </button>
+                    <button type="button" onclick="loadFullPreset()" class="btn-preset">
+                        <span>🎯</span>
+                        Full (8 TF)
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
         Telegram.WebApp.ready();
 
-        // Available timeframes and default selection
         const timeframes = ['1m', '5m', '15m', '30m', '1h', '2h', '4h', '8h', '12h', '1d', '3d', '1w'];
         const defaultTimeframes = ['1h', '2h', '4h', '8h', '12h', '1d', '3d', '1w'];
 
-        // Initialize timeframe grid
         function initTimeframes() {
             const grid = document.getElementById('timeframeGrid');
             timeframes.forEach(tf => {
                 const div = document.createElement('div');
-                div.className = 'timeframe-checkbox';
+                div.className = 'timeframe-item';
                 div.textContent = tf;
                 div.dataset.timeframe = tf;
+                div.setAttribute('tabindex', '0');
+                div.setAttribute('role', 'checkbox');
+                div.setAttribute('aria-checked', defaultTimeframes.includes(tf) ? 'true' : 'false');
                 
-                // Select default timeframes
                 if (defaultTimeframes.includes(tf)) {
                     div.classList.add('selected');
                 }
                 
-                div.addEventListener('click', function() {
-                    this.classList.toggle('selected');
+                div.addEventListener('click', toggleTimeframe);
+                div.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleTimeframe.call(this);
+                    }
                 });
                 
                 grid.appendChild(div);
             });
         }
 
-        // Get selected timeframes as comma-separated string
+        function toggleTimeframe() {
+            this.classList.toggle('selected');
+            this.setAttribute('aria-checked', this.classList.contains('selected') ? 'true' : 'false');
+        }
+
         function getSelectedTimeframes() {
-            const selected = document.querySelectorAll('.timeframe-checkbox.selected');
+            const selected = document.querySelectorAll('.timeframe-item.selected');
             return Array.from(selected).map(el => el.dataset.timeframe).join(',');
         }
 
-        // Load quick preset (1h, 4h, 1d)
         function loadQuickPreset() {
             const quickTFs = ['1h', '4h', '1d'];
-            document.querySelectorAll('.timeframe-checkbox').forEach(el => {
-                if (quickTFs.includes(el.dataset.timeframe)) {
-                    el.classList.add('selected');
-                } else {
-                    el.classList.remove('selected');
-                }
-            });
+            updateTimeframeSelection(quickTFs);
         }
 
-        // Load full preset (all default timeframes)
         function loadFullPreset() {
-            document.querySelectorAll('.timeframe-checkbox').forEach(el => {
-                if (defaultTimeframes.includes(el.dataset.timeframe)) {
+            updateTimeframeSelection(defaultTimeframes);
+        }
+
+        function updateTimeframeSelection(selectedTFs) {
+            document.querySelectorAll('.timeframe-item').forEach(el => {
+                if (selectedTFs.includes(el.dataset.timeframe)) {
                     el.classList.add('selected');
+                    el.setAttribute('aria-checked', 'true');
                 } else {
                     el.classList.remove('selected');
+                    el.setAttribute('aria-checked', 'false');
                 }
             });
         }
 
-        // Start analysis with hardcoded parameters
+        function showError(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.add('error-shake');
+            if (element.classList.contains('form-input')) {
+                element.style.borderColor = 'var(--danger)';
+            }
+            
+            setTimeout(() => {
+                element.classList.remove('error-shake');
+                if (element.classList.contains('form-input')) {
+                    element.style.borderColor = '';
+                }
+            }, 2000);
+        }
+
         function startAnalysis() {
             const symbol = document.getElementById('symbol').value.toUpperCase().trim();
             if (!symbol) {
@@ -273,11 +529,7 @@
 
             const selectedTimeframes = getSelectedTimeframes();
             if (!selectedTimeframes) {
-                const grid = document.getElementById('timeframeGrid');
-                grid.style.border = '2px solid #ef4444';
-                setTimeout(() => {
-                    grid.style.border = '';
-                }, 2000);
+                showError('timeframeGrid');
                 return;
             }
 
@@ -298,33 +550,21 @@
 
             Telegram.WebApp.sendData(JSON.stringify(data));
 
-            // Remove loading state after a short delay
             setTimeout(() => {
                 button.classList.remove('loading');
                 button.disabled = false;
             }, 500);
         }
 
-        // Show input error
-        function showError(inputId) {
-            const input = document.getElementById(inputId);
-            input.classList.add('border-red-500');
-            setTimeout(() => {
-                input.classList.remove('border-red-500');
-            }, 2000);
-        }
-
-        // Initialize timeframes on load
+        // Initialize
         initTimeframes();
 
-        // Enter key handler for symbol input
-        document.getElementById('symbol').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                startAnalysis();
-            }
+        // Auto-uppercase symbol input
+        document.getElementById('symbol').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
         });
 
-        // Fix iOS hover states
+        // Prevent zoom on iOS
         document.addEventListener('touchstart', function() {}, false);
     </script>
 </body>
